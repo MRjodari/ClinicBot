@@ -1,0 +1,18 @@
+bin/
+obj/
+data/
+*.user
+.vs/
+appsettings.Development.json
+
+Publish/
+
+build-temp/
+/build-temp
+
+.idea/
+/.idea
+
+# Ignore Guidelines
+docs/
+/docs
