@@ -7,7 +7,7 @@ namespace ClinicBot.Services;
 /// <summary>One turn of the clinic assistant: history + knowledge + tools → reply text.</summary>
 public class BotEngine
 {
-    private readonly ClaudeClient _claude;
+    private readonly ILlmClient _llm;
     private readonly KnowledgeBase _kb;
     private readonly ConversationStore _store;
     private readonly AppointmentStore _appointments;
@@ -17,10 +17,10 @@ public class BotEngine
 
     private static readonly TimeZoneInfo Istanbul = TimeZoneInfo.FindSystemTimeZoneById("Europe/Istanbul");
 
-    public BotEngine(ClaudeClient claude, KnowledgeBase kb, ConversationStore store, AppointmentStore appointments,
+    public BotEngine(ILlmClient llm, KnowledgeBase kb, ConversationStore store, AppointmentStore appointments,
         WhatsAppClient wa, IOptions<BotOptions> opt, ILogger<BotEngine> log)
     {
-        _claude = claude; _kb = kb; _store = store; _appointments = appointments; _wa = wa; _opt = opt.Value; _log = log;
+        _llm = llm; _kb = kb; _store = store; _appointments = appointments; _wa = wa; _opt = opt.Value; _log = log;
     }
 
     public async Task<string> HandleAsync(string userId, string text, string channel, CancellationToken ct, string? contactName = null)
@@ -37,7 +37,7 @@ public class BotEngine
 
             for (var step = 0; step < 4; step++)
             {
-                var res = await _claude.CreateMessageAsync(system, convo.Messages, Tools, ct);
+                var res = await _llm.CreateMessageAsync(system, convo.Messages, Tools, ct);
                 var content = res["content"]!.AsArray();
                 convo.Messages.Add(new JsonObject { ["role"] = "assistant", ["content"] = content.DeepClone() });
 

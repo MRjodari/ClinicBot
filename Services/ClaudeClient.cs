@@ -4,7 +4,7 @@ using Microsoft.Extensions.Options;
 namespace ClinicBot.Services;
 
 /// <summary>Thin wrapper over the Anthropic Messages API (no SDK dependency).</summary>
-public class ClaudeClient
+public class ClaudeClient : ILlmClient
 {
     private readonly HttpClient _http;
     private readonly ClaudeOptions _opt;

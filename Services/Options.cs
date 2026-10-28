@@ -10,6 +10,8 @@ public class BotOptions
     public int MaxHistoryTurns { get; set; } = 20;
     /// <summary>Optional WhatsApp number of the clinic coordinator, notified on new requests / handoffs (E.164 without +).</summary>
     public string? StaffNotifyNumber { get; set; }
+    /// <summary>Which ILlmClient answers patient messages: "Gemini" (default) or "Claude".</summary>
+    public string Provider { get; set; } = "Gemini";
 }
 
 public class ClaudeOptions
@@ -18,6 +20,14 @@ public class ClaudeOptions
     public string Model { get; set; } = "claude-haiku-5-5";
     public int MaxTokens { get; set; } = 800;
     public string BaseUrl { get; set; } = "https://api.anthropic.com/";
+}
+
+public class GeminiOptions
+{
+    public string ApiKey { get; set; } = "";
+    public string Model { get; set; } = "gemini-2.5-flash";
+    public int MaxTokens { get; set; } = 800;
+    public string BaseUrl { get; set; } = "https://generativelanguage.googleapis.com/v1beta";
 }
 
 public class WhatsAppOptions

@@ -6,10 +6,19 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<BotOptions>(builder.Configuration.GetSection("Bot"));
 builder.Services.Configure<ClaudeOptions>(builder.Configuration.GetSection("Claude"));
+builder.Services.Configure<GeminiOptions>(builder.Configuration.GetSection("Gemini"));
 builder.Services.Configure<WhatsAppOptions>(builder.Configuration.GetSection("WhatsApp"));
 
 builder.Services.AddHttpClient<ClaudeClient>();
+builder.Services.AddHttpClient<GeminiClient>();
 builder.Services.AddHttpClient<WhatsAppClient>();
+builder.Services.AddSingleton<ILlmClient>(sp =>
+{
+    var provider = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<BotOptions>>().Value.Provider;
+    return provider.Equals("Claude", StringComparison.OrdinalIgnoreCase)
+        ? sp.GetRequiredService<ClaudeClient>()
+        : sp.GetRequiredService<GeminiClient>();
+});
 builder.Services.AddSingleton<KnowledgeBase>();
 builder.Services.AddSingleton<ConversationStore>();
 builder.Services.AddSingleton<AppointmentStore>();
